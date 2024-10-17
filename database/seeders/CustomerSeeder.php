@@ -15,17 +15,23 @@ class CustomerSeeder extends Seeder
     public function run(): void
     {
         Customer::create([
-            'name' => 'John Doe',
+            'first_name' => 'Muhammad',
+            'last_name' => 'Rizal Ramzi',
+            'email' => 'rmzi@gmail.com',
+            'telephone' => '089582630192',
             'nisn' => '123456789',
             'password' => Hash::make('keren123'), // Pastikan untuk meng-hash password
-            'class' => '10A'
+            'class' => 'XII SIJA 1'
         ]);
 
         Customer::create([
-            'name' => 'Jane Doe',
+            'first_name' => 'Arka',
+            'last_name' => 'Jenar',
+            'email' => 'arka@gmail.com',
+            'telephone' => '089522637192',
             'nisn' => '987654321',
-            'password' => Hash::make('password123'), // Contoh data lainnya
-            'class' => '10B'
+            'password' => Hash::make('keren123'), // Pastikan untuk meng-hash password
+            'class' => 'XII SIJA 1'
         ]);
     }
 }

@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
-use App\Models\Store;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
-class StoreController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $stores = Store::all(); // Ambil semua toko
-        return view('dashboard', compact('stores'));
+        $categories = Category::all(); // Mengambil semua data kategori
+        return view('dashboard', compact('categories'));
     }
 
     /**
@@ -38,14 +37,7 @@ class StoreController extends Controller
      */
     public function show(string $id)
     {
-        // Ambil store berdasarkan ID
-        $store = Store::findOrFail($id);
-
-        // Ambil semua item yang memiliki store_id sesuai dengan $id
-        $items = Item::where('store_id', $id)->get();
-
-        // Kirim data store dan items ke view
-        return view('store_detail', compact('store', 'items')); 
+        //
     }
 
     /**

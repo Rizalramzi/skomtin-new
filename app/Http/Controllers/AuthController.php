@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Seller;
+use App\Models\Store;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -66,6 +67,27 @@ class AuthController extends Controller
 
         return redirect()->route('login.customer');
     }
+
+    // Misalnya, di dalam StoreController atau controller yang sesuai
+    public function index()
+    {
+        // Ambil informasi pengguna yang sedang login
+        if (Auth::guard('customer')->check()) {
+            $user = Auth::guard('customer')->user();
+        } elseif (Auth::guard('seller')->check()) {
+            $user = Auth::guard('seller')->user();
+        } else {
+            // Jika pengguna tidak terautentikasi, arahkan ke halaman login
+            return redirect()->route('login.customer');
+        }
+
+        // Mengambil data lain yang diperlukan untuk dashboard
+        $stores = Store::all(); // Ambil semua data store atau sesuai dengan kebutuhan Anda
+
+        // Kembalikan view dan kirimkan data
+        return view('dashboard', compact('user', 'stores'));
+    }
+
 
     public function logout()
     {

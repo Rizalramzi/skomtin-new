@@ -6,16 +6,20 @@ use App\Models\Item;
 use App\Models\Store;
 use Illuminate\Http\Request;
 
-class StoreController extends Controller
+class ItemController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($id)
     {
-        $stores = Store::all(); // Ambil semua toko
-        return view('dashboard', compact('stores'));
+       // Ambil semua item yang memiliki store_id sesuai dengan $id
+       $items = Item::where('store_id', $id)->get();
+
+       // Kirim data items ke view
+       return view('store_detail', compact('items')); //
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -38,14 +42,7 @@ class StoreController extends Controller
      */
     public function show(string $id)
     {
-        // Ambil store berdasarkan ID
-        $store = Store::findOrFail($id);
-
-        // Ambil semua item yang memiliki store_id sesuai dengan $id
-        $items = Item::where('store_id', $id)->get();
-
-        // Kirim data store dan items ke view
-        return view('store_detail', compact('store', 'items')); 
+        //
     }
 
     /**

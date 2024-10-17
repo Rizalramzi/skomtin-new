@@ -52,6 +52,7 @@
                             <button type="submit" class="block w-full text-center bg-main text-white p-3 rounded-lg font-semibold rounded-tl-[5px] rounded-bl-[15px] rounded-tr-[15px] rounded-br-[5px]">Masuk</button>
                         </div>
                     </form>
+                    <h1 class="text-center mt-[1vw] text-[1vw]"><a href="/login/seller">Masuk sebagai Penjual</a></h1>
                 </div>
             </div>
         </div>
