@@ -39,4 +39,13 @@ Route::get('profile', [AuthController::class, 'profile'])->name('profile');
 // Rute logout
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
+// Rute history
 Route::get('history', [OrderController::class, 'history'])->name('history')->middleware('auth:customer');
+
+// Rute keranjang
+Route::post('/add-to-cart', [OrderController::class, 'addToCart'])->name('cart.add');
+Route::get('/cart', [OrderController::class, 'viewCart'])->name('cart.view');
+
+// Rute Checkout
+Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+

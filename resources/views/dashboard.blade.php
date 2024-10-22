@@ -68,7 +68,7 @@
                 @foreach ($categories as $category)
                     <a href="">
                         <div class="flex flex-col items-center space-y-4">
-                            <img src="{{ asset('assets/categories/drink-category.png') }}" alt="" width="120">
+                            <img src="{{ asset($category->image) }}" alt="" width="120">
                             <h1 class="font-semibold">{{ $category->name }}</h1>
                         </div>
                     </a>

@@ -70,7 +70,7 @@
                 <div class="w-[90%] max-w-xs rounded-3xl overflow-hidden border-b border-r border-l border-main my-4">
                     <div class="overflow-hidden">
                         <img class="w-full transform transition-transform duration-300 ease-in-out hover:scale-110" 
-                             src="{{ asset('assets/images/snacks-image.png') }}" 
+                             src="{{ asset($item->image) }}" 
                              alt="{{ $item->name }}">
                     </div>
                     <div class="px-4 py-4">
@@ -78,11 +78,19 @@
                         <span class="block text-md font-regular text-main font-semibold">Rp. {{ number_format($item->price, 0, ',', '.') }}</span>
                         <div class="flex justify-end">
                             <!-- Button Add -->
-                            <button class="addButton bg-light_main text-main font-semibold w-28 p-[0.60rem] rounded-full transition-transform duration-300 ease-in-out">
-                                Tambah
-                            </button>
+                            <form action="{{ route('cart.add') }}" method="POST" class="inline-block">
+                                @csrf
+                                <input type="hidden" name="item[id]" value="{{ $item->id }}">
+                                <input type="hidden" name="item[name]" value="{{ $item->name }}">
+                                <input type="hidden" name="item[price]" value="{{ $item->price }}">
+                                <input type="hidden" name="item[id]" value="{{ $item->id }}"> <!-- You can keep this if you need a separate item_id -->
+                                <button type="submit" class="addButton bg-light_main text-main font-semibold w-28 p-[0.60rem] rounded-full transition-transform duration-300 ease-in-out">
+                                    Tambah
+                                </button>
+                            </form>   
                         </div>
                     </div>
+                    
                 </div>
             </div>
             @endforeach

@@ -15,15 +15,15 @@ class Order extends Model
         return $this->belongsTo(Customer::class);
     }
 
-    public function store()
-    {
-        return $this->belongsTo(Store::class);
-    }
+    // public function store()
+    // {
+    //     return $this->belongsTo(Store::class);
+    // }
 
-    public function items()
-    {
-        return $this->belongsToMany(Item::class)->withPivot('quantity', 'price');
-    }
+    // public function items()
+    // {
+    //     return $this->belongsToMany(Item::class)->withPivot('quantity', 'price');
+    // }
 
     public function getTotalPriceAttribute()
     {
@@ -31,4 +31,15 @@ class Order extends Model
             return $item->pivot->quantity * $item->pivot->price;
         });
     }
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class, 'order_id'); // Use order_items table
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
+
+
 }

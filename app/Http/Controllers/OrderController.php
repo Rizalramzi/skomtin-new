@@ -6,46 +6,70 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class OrderController extends Controller
 {
-    public function store(Request $request)
-    {
-        $request->validate([
-            'items' => 'required|array',
-            'items.*.id' => 'required|exists:items,id',
-            'items.*.quantity' => 'required|integer|min:1',
-        ]);
-
-        // Buat order baru
-        $order = Order::create([
-            'customer_id' => Auth::guard('customer')->id(),
-            'store_id' => $request->store_id, // Pastikan Anda mengirim store_id dari tampilan
-            'status' => 'pending',
-        ]);
-
-        // Tambahkan item ke order
-        foreach ($request->items as $item) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'item_id' => $item['id'],
-                'quantity' => $item['quantity'],
-                'price' => Item::find($item['id'])->price, // Ambil harga item dari database
-            ]);
-        }
-
-        return redirect()->route('order.show', $order->id)->with('success', 'Order berhasil dibuat!');
-    }
-
-    public function show($id)
-    {
-        $order = Order::with('items.item')->findOrFail($id);
-        return view('detail_order', compact('order'));
-    }
-
     public function history()
     {
-        $orders = Order::with('store')->where('customer_id', Auth::guard('customer')->id())->get();
+        $orders = Order::where('customer_id', Auth::guard('customer')->id())
+            ->with('items.item', 'store') 
+            ->orderBy('created_at', 'desc')
+            ->get();
+    
         return view('history', compact('orders'));
+    }
+    
+    
+    public function addToCart(Request $request)
+    {
+        $item = $request->input('item');
+
+        $cart = Session::get('cart', []);
+        $cart[$item['id']] = [
+            'name' => $item['name'],
+            'price' => $item['price'],
+            'id' => $item['id'], 
+            'quantity' => isset($cart[$item['id']]) ? $cart[$item['id']]['quantity'] + 1 : 1,
+        ];
+
+        Session::put('cart', $cart);
+
+        return redirect()->back()->with('success', 'Item added to cart!');
+    }
+    
+
+    public function checkout()
+    {
+        $cart = Session::get('cart', []);
+    
+        if (empty($cart)) {
+            return redirect()->route('cart.view')->with('error', 'Your cart is empty!');
+        }
+    
+        $order = Order::create([
+            'customer_id' => auth()->guard('customer')->id(), 
+            'store_id' => 1,
+            'status' => 'pending',
+        ]);
+    
+        foreach ($cart as $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'item_id' => $item['id'], 
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+            ]);
+        }
+    
+        Session::forget('cart');
+    
+        return redirect()->route('history')->with('success', 'Order placed successfully!');
+    }
+
+    public function viewCart()
+    {
+        $cart = Session::get('cart', []);
+        return view('cart', compact('cart'));
     }
 }
