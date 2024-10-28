@@ -13,6 +13,18 @@ Route::get('/', function () {
     return view('index');
 });
 
+Route::get('/my-store', [StoreController::class, 'showStoreForSeller'])->name('store');
+Route::post('/order/update-status/{id}', [OrderController::class, 'updateStatus'])->name('order.updateStatus');
+Route::middleware(['auth:seller'])->group(function () {
+    Route::get('/my-store/items/create', [ItemController::class, 'create'])->name('items.create');
+    Route::post('/my-store/items', [ItemController::class, 'store'])->name('items.store');
+    Route::get('/my-store/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
+    Route::put('/my-store/items/{item}', [ItemController::class, 'update'])->name('items.update');
+    Route::delete('/my-store/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+
+});
+
+
 // Rute login
 Route::get('login/customer', [AuthController::class, 'showCustomerLogin'])->name('login.customer');
 Route::post('login/customer', [AuthController::class, 'customerLogin'])->name('customer.login');
@@ -39,8 +51,6 @@ Route::get('profile', [AuthController::class, 'profile'])->name('profile');
 // Rute logout
 Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-// Rute history
-Route::get('history', [OrderController::class, 'history'])->name('history')->middleware('auth:customer');
 
 // Rute keranjang
 Route::post('/add-to-cart', [OrderController::class, 'addToCart'])->name('cart.add');

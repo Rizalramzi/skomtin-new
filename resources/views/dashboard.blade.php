@@ -26,14 +26,26 @@
             <div class="relative">
                 <img src="{{ asset('assets/images/profile-picture.png') }}" alt="Profile Picture" class="rounded-full cursor-pointer profilePicture" width="40">
                 <!-- Pop-up Menu -->
-                <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden profileMenu z-50">
-                    <a href="{{ route('profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
-                    <a href="/history" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">History</a>
-                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                        @csrf
-                        <button class="block ps-4 text-start w-full py-2 text-gray-800 hover:bg-gray-100">Log Out</button>
-                    </form>
-                </div>
+                @if(auth()->guard('customer')->check())
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden profileMenu z-50">
+                        <a href="{{ route('profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                        <a href="/history" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">History</a>
+                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button class="block ps-4 text-start w-full py-2 text-gray-800 hover:bg-gray-100">Log Out</button>
+                        </form>
+                    </div>
+                @elseif(auth()->guard('seller')->check())
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden profileMenu z-50">
+                        <a href="{{ route('profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                        <a href="/history" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Order</a>
+                        <a href="{{ route('store') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">My Store</a> <!-- Tautan ke toko seller -->
+                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button class="block ps-4 text-start w-full py-2 text-gray-800 hover:bg-gray-100">Log Out</button>
+                        </form>
+                    </div>
+                @endif
             </div>        
         </div>
     </nav>
@@ -56,46 +68,51 @@
         </div>
     </section>
 
-    <div class="font-medium px-14 mt-12 text-sm">
-        <a href="">Beranda / <a href="" class="text-text_secondary">Daftar Pilihan Kantin</a></a>
-    </div>
-    
-    <section class="px-14 mt-10">
-        <div class="w-full">
-            <h1 class="text-2xl font-semibold">Aneka Menu</h1>
-            <p class="text-sm max-w-[60%] font-light">Lihat semua jenis makanan dari makanan ringan sampai minuman semuanya disini</p>
-            <div class="grid grid-cols-6 mt-8 justify-center items-center">
-                @foreach ($categories as $category)
-                    <a href="">
-                        <div class="flex flex-col items-center space-y-4">
-                            <img src="{{ asset($category->image) }}" alt="" width="120">
-                            <h1 class="font-semibold">{{ $category->name }}</h1>
+    @if(auth()->guard('customer')->check())
+        <div class="font-medium px-14 mt-12 text-sm">
+            <a href="">Beranda / <a href="" class="text-text_secondary">Daftar Pilihan Kantin</a></a>
+        </div>
+
+        <section class="px-14 mt-10">
+            <div class="w-full">
+                <h1 class="text-2xl font-semibold">Aneka Menu</h1>
+                <p class="text-sm max-w-[60%] font-light">Lihat semua jenis makanan dari makanan ringan sampai minuman semuanya disini</p>
+                <div class="grid grid-cols-6 mt-8 justify-center items-center">
+                    @foreach ($categories as $category)
+                        <a href="">
+                            <div class="flex flex-col items-center space-y-4">
+                                <img src="{{ asset($category->image) }}" alt="" width="120">
+                                <h1 class="font-semibold">{{ $category->name }}</h1>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <section class="px-14 mt-10">
+            <div class="w-full">
+                <h1 class="text-2xl font-semibold">Pilihan Kantin Kami</h1>
+                <p class="text-sm max-w-[60%] font-light">Lihat semua pilihan kantin, cari yang paling cocok buat seleramu</p>
+                <div class="grid grid-cols-4 mt-6 justify-center items-center">
+                    @foreach($stores as $store)
+                    <a href="{{ route('store.detail', $store->id) }}">    
+                        <div class="flex justify-center">
+                            <div class="card bg-white pb-4 border shadow rounded-2xl space-y-4">
+                                <img src="{{ asset('assets/images/canteen-image.png') }}" alt="{{ $store->name }}" width="240" class="rounded-xl">
+                                <h1 class="text-center text-md font-semibold">{{ $store->name }}</h1>
+                            </div>
                         </div>
                     </a>
-                @endforeach
+                    @endforeach
+                </div>
             </div>
+        </section>
+    @elseif(auth()->guard('seller')->check())
+        <div>
+            <h1>MAKASIH ORANG BAIK</h1>
         </div>
-    </section>
-    
-
-    <section class="px-14 mt-10">
-        <div class="w-full">
-            <h1 class="text-2xl font-semibold">Pilihan Kantin Kami</h1>
-            <p class="text-sm max-w-[60%] font-light">Lihat semua pilihan kantin, cari yang paling cocok buat seleramu</p>
-            <div class="grid grid-cols-4 mt-6 justify-center items-center">
-                @foreach($stores as $store)
-                <a href="{{ route('store.detail', $store->id) }}">    
-                    <div class="flex justify-center">
-                        <div class="card bg-white pb-4 border shadow rounded-2xl space-y-4">
-                            <img src="{{ asset('assets/images/canteen-image.png') }}" alt="{{ $store->name }}" width="240" class="rounded-xl">
-                            <h1 class="text-center text-md font-semibold">{{ $store->name }}</h1>
-                        </div>
-                    </div>
-                </a>
-                @endforeach
-            </div>
-        </div>
-    </section>
+    @endif
     
 
     

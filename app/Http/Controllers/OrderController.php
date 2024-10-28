@@ -12,44 +12,91 @@ class OrderController extends Controller
 {
     public function history()
     {
-        $orders = Order::where('customer_id', Auth::guard('customer')->id())
-            ->with('items.item', 'store') 
-            ->orderBy('created_at', 'desc')
-            ->get();
-    
-        return view('history', compact('orders'));
+        if (Auth::guard('customer')->check()) {
+            // Jika yang login adalah customer
+            $orders = Order::where('customer_id', Auth::guard('customer')->id())
+                ->with('items.item', 'store') 
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return view('history', ['orders' => $orders, 'role' => 'customer']);
+        }
+
+        if (Auth::guard('seller')->check()) {
+            // Jika yang login adalah seller
+            $orders = Order::where('store_id', Auth::guard('seller')->user()->store->id)
+                ->with('items.item', 'customer') // Mengambil data customer
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return view('history', ['orders' => $orders, 'role' => 'seller']);
+        }
+
+        return redirect()->route('login.seller');
     }
+
     
-    
+    public function updateStatus($id)
+    {
+        // Cari order berdasarkan ID
+        $order = Order::find($id);
+
+        // Pastikan order ditemukan dan statusnya masih pending
+        if ($order && $order->status == 'pending') {
+            $order->status = 'completed'; // Ubah status menjadi completed
+            $order->save(); // Simpan perubahan
+        }
+
+        // Redirect kembali ke halaman history dengan pesan sukses
+        return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui.');
+    }
+
+
     public function addToCart(Request $request)
     {
-        $item = $request->input('item');
+        // Validasi input
+        $request->validate([
+            'item.id' => 'required|exists:items,id',
+        ]);
 
-        $cart = Session::get('cart', []);
-        $cart[$item['id']] = [
-            'name' => $item['name'],
-            'price' => $item['price'],
-            'id' => $item['id'], 
-            'quantity' => isset($cart[$item['id']]) ? $cart[$item['id']]['quantity'] + 1 : 1,
-        ];
+        // Logika untuk menambahkan item ke keranjang
+        // Anda bisa menggunakan session untuk menyimpan keranjang atau model lain
+        $cart = session()->get('cart', []);
 
-        Session::put('cart', $cart);
+        // Menambahkan item ke keranjang
+        $itemId = $request->input('item.id');
+        if (isset($cart[$itemId])) {
+            $cart[$itemId]['quantity']++;
+        } else {
+            $item = Item::find($itemId);
+            $cart[$itemId] = [
+                'name' => $item->name,
+                'quantity' => 1,
+                'price' => $item->price,
+                'id' => $itemId,
+            ];
+        }
 
-        return redirect()->back()->with('success', 'Item added to cart!');
+        session()->put('cart', $cart);
+
+        return redirect()->back()->with('success', 'Item berhasil ditambahkan ke keranjang.');
     }
     
 
     public function checkout()
     {
         $cart = Session::get('cart', []);
-    
+
+
+        $storeId = Session::get('selected_store_id');
+
         if (empty($cart)) {
             return redirect()->route('cart.view')->with('error', 'Your cart is empty!');
         }
     
         $order = Order::create([
             'customer_id' => auth()->guard('customer')->id(), 
-            'store_id' => 1,
+            'store_id' => $storeId,
             'status' => 'pending',
         ]);
     
@@ -69,7 +116,7 @@ class OrderController extends Controller
 
     public function viewCart()
     {
-        $cart = Session::get('cart', []);
-        return view('cart', compact('cart'));
+        $cart = session()->get('cart');
+        return view('cart.view', compact('cart')); // Pastikan Anda memiliki view untuk menampilkan keranjang
     }
 }

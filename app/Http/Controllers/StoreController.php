@@ -41,12 +41,37 @@ class StoreController extends Controller
         // Ambil store berdasarkan ID
         $store = Store::findOrFail($id);
 
+        session(['selected_store_id' => $store->id]);
+
         // Ambil semua item yang memiliki store_id sesuai dengan $id
         $items = Item::where('store_id', $id)->get();
 
         // Kirim data store dan items ke view
         return view('store_detail', compact('store', 'items')); 
     }
+
+    public function showStoreForSeller()
+    {
+        // Ambil seller yang sedang login
+        $seller = auth()->guard('seller')->user();
+
+        // Ambil store berdasarkan seller_id
+        $store = Store::where('seller_id', $seller->id)->first();
+
+        // Pastikan store ada
+        if (!$store) {
+            return redirect()->back()->with('error', 'Store tidak ditemukan');
+        }
+
+        // Ambil semua item yang terkait dengan store
+        $items = Item::where('store_id', $store->id)->get();
+
+        // Kirim data store dan items ke view
+        return view('store_detail', compact('store', 'items'));
+    }
+
+
+
 
     /**
      * Show the form for editing the specified resource.

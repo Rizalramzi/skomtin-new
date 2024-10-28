@@ -6,6 +6,7 @@
     <title>{{ $store->name }}</title>
     @vite('resources/css/app.css')
     @vite('resources/js/main.js')
+    @vite('resources/js/navbar.js')
 </head>
 <body>
     <!-- Navbar -->
@@ -64,36 +65,53 @@
     <!-- Item Section -->
     <section class="px-14 mt-6">
         <h1 class="text-2xl font-semibold">Menu</h1>
+
+        @if(auth()->guard('seller')->check())
+            <!-- CRUD Buttons for Seller -->
+            <div class="flex justify-end">
+                <a href="{{ route('items.create') }}" class="bg-main text-white px-4 py-2 rounded-full">Tambah Item Baru</a>
+            </div>
+        @endif
+
         <div class="grid grid-cols-4 mt-4">
             @foreach($items as $item)
-            <div class="flex justify-center items-center">
-                <div class="w-[90%] max-w-xs rounded-3xl overflow-hidden border-b border-r border-l border-main my-4">
-                    <div class="overflow-hidden">
-                        <img class="w-full transform transition-transform duration-300 ease-in-out hover:scale-110" 
-                             src="{{ asset($item->image) }}" 
-                             alt="{{ $item->name }}">
-                    </div>
-                    <div class="px-4 py-4">
-                        <h1 class="text-text_secondary font-medium text-lg">{{ $item->name }}</h1>
-                        <span class="block text-md font-regular text-main font-semibold">Rp. {{ number_format($item->price, 0, ',', '.') }}</span>
-                        <div class="flex justify-end">
-                            <!-- Button Add -->
-                            <form action="{{ route('cart.add') }}" method="POST" class="inline-block">
-                                @csrf
-                                <input type="hidden" name="item[id]" value="{{ $item->id }}">
-                                <input type="hidden" name="item[name]" value="{{ $item->name }}">
-                                <input type="hidden" name="item[price]" value="{{ $item->price }}">
-                                <input type="hidden" name="item[id]" value="{{ $item->id }}"> <!-- You can keep this if you need a separate item_id -->
-                                <button type="submit" class="addButton bg-light_main text-main font-semibold w-28 p-[0.60rem] rounded-full transition-transform duration-300 ease-in-out">
-                                    Tambah
-                                </button>
-                            </form>   
+                <div class="flex justify-center items-center">
+                    <div class="w-[90%] max-w-xs rounded-3xl overflow-hidden border-b border-r border-l border-main my-4">
+                        <div class="overflow-hidden">
+                            <img class="w-full transform transition-transform duration-300 ease-in-out hover:scale-110" 
+                                src="{{ asset('assets/images/snacks-image.png')}}" 
+                                alt="{{ $item->name }}">
+                        </div>
+                        <div class="px-4 py-4">
+                            <h1 class="text-text_secondary font-medium text-lg">{{ $item->name }}</h1>
+                            <span class="block text-md font-regular text-main font-semibold">Rp. {{ number_format($item->price, 0, ',', '.') }}</span>
+                            <div class="flex justify-between items-center mt-4">
+                                <!-- Button Add for Customer -->
+                                @if(auth()->guard('customer')->check())
+                                    <form action="{{ route('cart.add') }}" method="POST" class="inline-block"> 
+                                        @csrf
+                                        <input type="hidden" name="item[id]" value="{{ $item->id }}">
+                                        <button type="submit" class="bg-light_main text-main font-semibold w-28 p-[0.60rem] rounded-full">Tambah</button>
+                                    </form>
+                                @endif
+
+                                <!-- CRUD Buttons for Seller -->
+                                @if(auth()->guard('seller')->check())
+                                    <div class="flex space-x-2 items-center">
+                                        <a href="{{ route('items.edit', $item->id) }}" class="bg-blue-600 text-white px-4 py-2 rounded-full">Edit</a>
+                                        <form action="{{ route('items.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus item ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-full">Hapus</button>
+                                        </form>
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                     </div>
-                    
                 </div>
-            </div>
             @endforeach
+
         </div>
     </section>
 
