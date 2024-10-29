@@ -81,7 +81,7 @@
                     @foreach ($categories as $category)
                         <a href="">
                             <div class="flex flex-col items-center space-y-4">
-                                <img src="{{ asset($category->image) }}" alt="" width="120">
+                                <img src="{{ asset('storage/' . $category->image) }}" alt="Category Image" class="rounded-full w-[100px] h-[100px] object-cover">
                                 <h1 class="font-semibold">{{ $category->name }}</h1>
                             </div>
                         </a>
@@ -99,7 +99,7 @@
                     <a href="{{ route('store.detail', $store->id) }}">    
                         <div class="flex justify-center">
                             <div class="card bg-white pb-4 border shadow rounded-2xl space-y-4">
-                                <img src="{{ asset('assets/images/canteen-image.png') }}" alt="{{ $store->name }}" width="240" class="rounded-xl">
+                                <img src="{{ asset('storage/' . $store->image) }}" alt="{{ $store->name }}" width="240" class="rounded-xl">
                                 <h1 class="text-center text-md font-semibold">{{ $store->name }}</h1>
                             </div>
                         </div>
