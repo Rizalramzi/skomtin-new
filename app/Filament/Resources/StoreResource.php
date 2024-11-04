@@ -26,9 +26,18 @@ class StoreResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('seller_id')
+                Forms\Components\FileUpload::make('image')
+                    ->image()
+                    ->label('Image Store')
                     ->required()
-                    ->numeric(),
+                    ->disk('public') // Sesuaikan dengan disk penyimpanan yang kamu pilih
+                    ->directory('assets/store') // Direktori untuk menyimpan file
+                    ->maxSize(10240) // Maksimal ukuran file dalam kilobyte (10MB)
+                    ->image() // Memastikan hanya file gambar yang dapat diunggah
+                    ->columnSpanFull(),
+                Forms\Components\Select::make('seller_id')
+                    ->relationship('seller', 'name')
+                    ->required(),
             ]);
     }
 
@@ -38,6 +47,7 @@ class StoreResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('image'),
                 Tables\Columns\TextColumn::make('seller.name')
                     ->numeric()
                     ->sortable(),

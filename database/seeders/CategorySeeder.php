@@ -13,10 +13,29 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        Category::insert([
-            ['name' => 'Jajanan', 'image' => 'assets/categories/snack-category.png'],
-            ['name' => 'Sarapan', 'image' => 'assets/categories/rice-category.png'],
-            ['name' => 'Minuman', 'image' => 'assets/categories/drink-category.png'],
+        Category::create([
+            'name' => 'Aneka Nasi',
+            'image' => 'assets/category/rice-category.png'
+        ]);
+        Category::create([
+            'name' => 'Menu Sarapan',
+            'image' => 'assets/category/breakfast-category.png'
+        ]);
+        Category::create([
+            'name' => 'Minuman',
+            'image' => 'assets/category/drink-category.png'
+        ]);
+        Category::create([
+            'name' => 'Kopi',
+            'image' => 'assets/category/coffe-category.png'
+        ]);
+        Category::create([
+            'name' => 'Mie',
+            'image' => 'assets/category/noodle-category.png'
+        ]);
+        Category::create([
+            'name' => 'Makanan Ringan',
+            'image' => 'assets/category/snack-category.png'
         ]);
     }
 }

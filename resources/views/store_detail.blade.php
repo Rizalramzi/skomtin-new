@@ -23,7 +23,7 @@
                 <input type="text" placeholder="Cari Makan .." class="outline-none bg-secondary rounded-md ml-3 w-full py-3 pr-8 text-gray-700 placeholder-gray-500 border-none text-sm">
             </div>
             <div>
-                <img src="{{ asset('assets/icons/cart-icon.svg') }}" alt="Cart Icon" class="w-6 h-6">
+                <a href="/cart"><img src="{{ asset('assets/icons/cart-icon.svg') }}" alt="Cart Icon" class="w-6 h-6"></a>
             </div> 
             <div class="relative">
                 <img src="{{ asset('assets/images/profile-picture.png') }}" alt="Profile Picture" class="rounded-full cursor-pointer profilePicture" width="40">
@@ -50,7 +50,7 @@
     <!-- Store Detail Section -->
     <section class="px-14 mt-[2rem]">
         <div class="flex items-center">
-            <img src="{{ asset('assets/images/canteen-image.png')}}" alt="{{ $store->name }}" class="rounded-2xl" width="300">
+            <img src="{{ asset('storage/' . $store->image) }}" alt="{{ $store->name }}" class="rounded-2xl" width="300">
             <div class="ps-10 space-y-4">
                 <h1 class="text-2xl font-semibold">{{ $store->name }}</h1>
                 <p>Aneka pentol, es kopi dll</p>
@@ -78,8 +78,8 @@
                 <div class="flex justify-center items-center">
                     <div class="w-[90%] max-w-xs rounded-3xl overflow-hidden border-b border-r border-l border-main my-4">
                         <div class="overflow-hidden">
-                            <img class="w-full transform transition-transform duration-300 ease-in-out hover:scale-110" 
-                                src="{{ asset('assets/images/snacks-image.png')}}" 
+                            <img class="w-[300px] h-[150px] object-cover transform transition-transform duration-300 ease-in-out hover:scale-110" 
+                                src="{{ asset('storage/' . $item->image) }}" 
                                 alt="{{ $item->name }}">
                         </div>
                         <div class="px-4 py-4">

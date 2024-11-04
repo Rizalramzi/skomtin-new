@@ -77,7 +77,7 @@
                                 </div>
 
                                 <div>
-                                    <label for="telephone" class="block text-md font-semibold text-gray-700 mb-2">Telephone</label>
+                                    <label for="telephone" class="block text-md font-semibold text-gray-700 mb-2">Contact</label>
                                     <input type="text" id="telephone" name="telephone" value="{{ $user->telephone }}" class="w-full px-3 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-main text-text_secondary">
                                 </div>
                             @elseif(auth()->guard('seller')->check())

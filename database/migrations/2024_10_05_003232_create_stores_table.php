@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('image');
             $table->foreignId('seller_id')->unique()->constrained()->onDelete('cascade');
             $table->timestamps();
         });

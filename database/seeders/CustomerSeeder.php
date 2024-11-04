@@ -26,7 +26,7 @@ class CustomerSeeder extends Seeder
 
         Customer::create([
             'first_name' => 'Arka',
-            'last_name' => 'Jenar',
+            'last_name' => 'Jenar Maarif',
             'email' => 'arka@gmail.com',
             'telephone' => '089522637192',
             'nisn' => '987654321',

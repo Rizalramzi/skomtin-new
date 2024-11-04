@@ -119,4 +119,20 @@ class OrderController extends Controller
         $cart = session()->get('cart');
         return view('cart.view', compact('cart')); // Pastikan Anda memiliki view untuk menampilkan keranjang
     }
+
+    public function remove($index)
+    {
+        $cart = session('cart', []);
+        
+        // Menghapus item berdasarkan index
+        if (isset($cart[$index])) {
+            unset($cart[$index]);
+        }
+
+        // Mengatur ulang session cart
+        session(['cart' => array_values($cart)]); // Menjaga urutan array
+
+        return redirect()->back()->with('success', 'Item berhasil dihapus dari keranjang.');
+    }
+
 }

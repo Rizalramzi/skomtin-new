@@ -12,18 +12,28 @@
     @if(session('cart') && count(session('cart')) > 0)
         <table class="w-full mt-4">
             <thead>
-                <tr>
+                <tr class="">
                     <th>Nama Item</th>
                     <th>Harga</th>
                     <th>Kuantitas</th>
+                    <th>Aksi</th> <!-- Kolom untuk aksi -->
                 </tr>
             </thead>
-            <tbody>
-                @foreach(session('cart') as $item)
-                    <tr>
-                        <td>{{ $item['name'] }}</td>
-                        <td>Rp. {{ number_format($item['price'], 0, ',', '.') }}</td>
-                        <td>{{ $item['quantity'] }}</td>
+            <tbody >
+                @foreach(session('cart') as $index => $item) <!-- Tambahkan index untuk menghapus item -->
+                    <tr class="border border-red-500 mt-[2vw]">
+                        <td class="text-center">{{ $item['name'] }}</td>
+                        <td class="text-center">Rp. {{ number_format($item['price'], 0, ',', '.') }}</td>
+                        <td class="text-center">{{ $item['quantity'] }}</td>
+                        <td class="text-center">
+                            <!-- Form untuk menghapus item dari keranjang -->
+                            <form action="{{ route('cart.remove', $index) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="bg-red-500 text-white font-semibold w-24 p-[0.60rem] rounded-full">
+                                    Hapus
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

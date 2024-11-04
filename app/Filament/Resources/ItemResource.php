@@ -42,12 +42,12 @@ class ItemResource extends Resource
                     ->maxSize(10240) // Maksimal ukuran file dalam kilobyte (10MB)
                     ->image() // Memastikan hanya file gambar yang dapat diunggah
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('store_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('category_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('store_id')
+                    ->relationship('store','name')
+                    ->required(),
+                Forms\Components\Select::make('category_id')
+                    ->relationship('category','name')
+                    ->required(),
             ]);
     }
 

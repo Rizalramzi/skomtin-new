@@ -7,6 +7,7 @@
     @vite('resources/css/app.css')
     @vite('resources/css/font.css')
     @vite('resources/css/style.css')
+    @vite('resources/js/navbar')
     <title>History</title>
 </head>
 <body>
@@ -28,121 +29,111 @@
             <div class="relative">
                 <img src="{{ asset('assets/images/profile-picture.png') }}" alt="Profile Picture" class="rounded-full cursor-pointer profilePicture" width="40">
                 <!-- Pop-up Menu -->
-                <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden profileMenu z-50">
-                    <a href="{{ route('profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
-                    <a href="/history" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">History</a>
-                    <form action="{{ route('logout') }}" method="POST" style="display: inline;">
-                        @csrf
-                        <button class="block ps-4 text-start w-full py-2 text-gray-800 hover:bg-gray-100">Log Out</button>
-                    </form>
-                </div>
+                @if(auth()->guard('customer')->check())
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden profileMenu z-50">
+                        <a href="{{ route('profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                        <a href="/history" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">History</a>
+                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button class="block ps-4 text-start w-full py-2 text-gray-800 hover:bg-gray-100">Log Out</button>
+                        </form>
+                    </div>
+                @elseif(auth()->guard('seller')->check())
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden profileMenu z-50">
+                        <a href="{{ route('profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                        <a href="/history" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Order</a>
+                        <a href="{{ route('store') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">My Store</a> <!-- Tautan ke toko seller -->
+                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button class="block ps-4 text-start w-full py-2 text-gray-800 hover:bg-gray-100">Log Out</button>
+                        </form>
+                    </div>
+                @endif
             </div>        
         </div>
     </nav>
 
     <section class="px-14 mt-[3vw]">
         <div class="flex items-center">
-            <img src="{{ asset('assets/icons/back-icon.svg') }}" alt="" class="w-[3vw] h-[3vw]">
+            <a href="/dashboard"><img src="{{ asset('assets/icons/back-icon.svg') }}" alt="" class="w-[3vw] h-[3vw]"></a>
             <h1 class="text-2xl font-semibold ms-[1vw]">Riwayat</h1>
         </div>
-        <div class="mt-[2vw]">
-            <div class="flex justify-between text-lg px-6 pb-4">
-                <h1>Warung</h1>
-                <h1>Pesanan</h1>
-                <h1>Total Harga</h1>
-                <h1></h1>
-            </div>
-            @if(auth()->guard('customer')->check())
+            <table class="w-full">
+                <!-- Header tabel berada di luar loop, jadi hanya ditampilkan sekali -->
+                <thead class="">
+                    <tr>
+                        <td class="p-[2vw] font-semibold text-[1.3vw]">Warung</td>
+                        <td class="p-[2vw] font-semibold text-[1.3vw]">Pesanan</td>
+                        <td class="p-[2vw] font-semibold text-[1.3vw]">Total Harga</td>
+                    </tr>
+                </thead>
                 @foreach($orders as $order)
                     @php
                         $total = 0; // Inisialisasi total untuk setiap pesanan
                         $jumlahMacamItem = count($order->items); // Hitung jumlah macam item
                     @endphp
-                    <div class="w-full border border-dark mb-4 px-6 py-6 rounded-lg">
-                        <div class="flex justify-between items-center">
-                            <div class="items-center">
-                                <h1 class="text-lg font-semibold">{{ $order->store->name }}</h1>
-                                <div class="flex items-center">
-                                    <p class="text-sm">{{ $order->created_at }}</p>
-                                    @if($order->status == 'pending')
-                                        <p class="bg-main_bg text-main px-4 py-2 rounded-full font-medium ms-2">Dalam Proses</p>
-                                    @elseif($order->status == 'completed')
-                                        <p class="bg-success_bg text-success px-4 py-2 rounded-full font-medium ms-2">Selesai</p>
+                    <tbody class="rounded border-[0.1vw] border-dark"> <!-- Menambahkan margin bottom untuk pemisahan antar tbody -->
+                        <tr>
+                            <!-- Kolom Warung -->
+                            <td class="p-[2vw]">
+                                <div class="items-center">
+                                    @if(auth()->guard('customer')->check())
+                                        <h1 class="text-lg font-semibold">{{ $order->store->name }}</h1>
+                                    @elseif(auth()->guard('seller')->check())
+                                        <h1 class="text-lg font-semibold">{{ $order->customer->first_name }} {{ $order->customer->last_name }}</h1>
                                     @endif
+                                    <div class="flex items-center">
+                                        <p class="text-sm">{{ $order->created_at }}</p>
+                                        @if($order->status == 'pending')
+                                            <span class="bg-main_bg text-main px-4 py-2 rounded-full font-semibold ms-2">Dalam Proses</span>
+                                        @elseif($order->status == 'completed')
+                                            <span class="bg-success_bg text-success px-4 py-2 rounded-full font-semibold ms-2">Selesai</span>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
-        
-                            <div class="flex items-center">
-                                @foreach($order->items as $item)
-                                    <p>{{ $item->item->name }}, </p>
-                                    @php
-                                        // Menghitung total harga untuk setiap item berdasarkan kuantitas
-                                        $total += $item->price * $item->quantity; // Pastikan Anda menggunakan harga dan kuantitas yang benar
-                                    @endphp
-                                @endforeach
-                            </div>
-        
-                            <div class="flex items-center">
-                                <p>Rp. {{ number_format($total, 0, ',', '.') }}</p> <!-- Menampilkan total harga -->
-                                <p>-{{ $jumlahMacamItem }} Item</p> <!-- Menampilkan jumlah item -->
-                            </div>
-        
-                            <div>
-                                <button class="border border-main text-main px-4 py-2 rounded-full font-semibold" onclick="showPopup({{ json_encode($order->items) }})">Lihat Detail</button>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            @elseif(auth()->guard('seller')->check())
-                @foreach($orders as $order)
-                    @php
-                        $total = 0; // Inisialisasi total untuk setiap pesanan
-                        $jumlahMacamItem = count($order->items); // Hitung jumlah macam item
-                    @endphp
-                    <div class="w-full border border-dark mb-4 px-6 py-6 rounded-lg">
-                        <div class="flex justify-between items-center">
-                            <div class="items-center">
-                                <h1 class="text-lg font-semibold">{{ $order->customer->first_name }} {{ $order->customer->last_name }}</h1> <!-- Nama customer -->
-                                <div class="flex items-center">
-                                    <p class="text-sm">{{ $order->created_at }}</p>
-                                    @if($order->status == 'pending')
-                                        <p class="bg-main_bg text-main px-4 py-2 rounded-full font-medium ms-2">Dalam Proses</p>
-                                    @elseif($order->status == 'completed')
-                                        <p class="bg-success_bg text-success px-4 py-2 rounded-full font-medium ms-2">Selesai</p>
-                                    @endif
+                            </td>
+                            
+                            <!-- Kolom Pesanan -->
+                            <td class="p-[2vw]">
+                                <div>
+                                    @foreach($order->items as $item)
+                                        <p>{{ $item->item->name }}</p>
+                                        @php
+                                            $total += $item->price * $item->quantity;
+                                        @endphp
+                                    @endforeach
                                 </div>
-                            </div>
-        
-                            <div class="flex items-center">
-                                @foreach($order->items as $item)
-                                    <p>{{ $item->item->name }}, </p>
-                                    @php
-                                        // Menghitung total harga untuk setiap item berdasarkan kuantitas
-                                        $total += $item->price * $item->quantity; // Pastikan Anda menggunakan harga dan kuantitas yang benar
-                                    @endphp
-                                @endforeach
-                            </div>
-        
-                            <div class="flex items-center">
-                                <p>Rp. {{ number_format($total, 0, ',', '.') }}</p> <!-- Menampilkan total harga -->
-                                <p>-{{ $jumlahMacamItem }} Item</p> <!-- Menampilkan jumlah item -->
-                            </div>
-        
-                            <div>
-                                @if($order->status == 'pending')
-                                    <form action="{{ route('order.updateStatus', $order->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="border border-main text-main px-4 py-2 rounded-full font-semibold">Ubah ke Selesai</button>
-                                    </form>
-                                @else
-                                    <button class="border border-main text-main px-4 py-2 rounded-full font-semibold" disabled>Sudah Selesai</button>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
+                            </td>
+                            
+                            <!-- Kolom Total Harga -->
+                            <td class="p-[2vw]">
+                                <p>Rp. {{ number_format($total, 0, ',', '.') }}</p>
+                                <p>{{ $jumlahMacamItem }} Item</p>
+                            </td>
+                            
+                            <!-- Kolom Aksi -->
+                            @if(auth()->guard('customer')->check())
+                                <td class="p-[2vw]">
+                                    <button class="border border-main text-main px-4 py-2 rounded-full font-semibold" onclick="showPopup({{ json_encode($order->items) }})">Lihat Detail</button>
+                                </td>
+                            @elseif(auth()->guard('seller')->check())
+                                <td class="p-[2vw]">
+                                    <div>
+                                        @if($order->status == 'pending')
+                                            <form action="{{ route('order.updateStatus', $order->id) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="border border-main text-main px-4 py-2 rounded-full font-semibold">Ubah ke Selesai</button>
+                                            </form>
+                                        @else
+                                            <button class="border border-main text-main px-4 py-2 rounded-full font-semibold" disabled>Sudah Selesai</button>
+                                        @endif
+                                    </div>
+                                </td>
+                            @endif  
+                        </tr>
+                    </tbody>
                 @endforeach
-            @endif
-        </div>
+            </table>
     </section>
 
     <!-- Pop-Up untuk Rincian Pesanan -->

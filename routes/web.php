@@ -56,6 +56,9 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/add-to-cart', [OrderController::class, 'addToCart'])->name('cart.add');
 Route::get('/cart', [OrderController::class, 'viewCart'])->name('cart.view');
 
+Route::post('/cart/remove/{index}', [OrderController::class, 'remove'])->name('cart.remove');
+
+
 // Rute Checkout
 Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
 
