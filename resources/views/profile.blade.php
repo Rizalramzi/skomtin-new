@@ -8,25 +8,44 @@
   @vite('resources/js/navbar.js')
 </head>
 <body class="text-dark">
-    <nav class="flex justify-between p-6 shadow-lg items-center">
-        <div class="flex items-center space-x-32">
-            <h1 class="font-semibold text-2xl">skomtin</h1>
-            <ul class="flex space-x-4">
-                <a href=""><li class="text-main">Beranda</li></a>
+    <nav class="flex justify-between px-[2vw] py-[1.5vw] shadow-lg items-center">
+        <div class="flex items-center space-x-[7vw]">
+            <h1 class="font-semibold text-[1.5vw]">skomtin</h1>
+            <ul class="flex space-x-[1vw]">
+                <a href="" class="text-[1.2vw]"><li class="text-main">Beranda</li></a>
             </ul>
         </div>
-        <div class="flex items-center space-x-6">
+        <div class="flex items-center space-x-[2vw]">
+            <div class="flex items-center bg-secondary rounded-md">
+                <img src="{{ asset('assets/icons/search-icon.svg') }}" alt="Search Icon" class="w-[1.2vw] h-[1.2vw] ml-[1vw]">
+                <input type="text" placeholder="Cari Makan .." class="outline-none bg-secondary rounded-[0.6vw] placeholder:text-[1.1vw] ml-[1vw] w-full py-[1vw] pr-[2vw] text-gray-700 placeholder-gray-500 border-none text-[1vw]">
+            </div>
             <div>
-                <img src="{{ asset('assets/icons/cart-icon.svg') }}" alt="Cart Icon" class="w-6 h-6">
+                <img src="{{ asset('assets/icons/cart-icon.svg') }}" alt="Cart Icon" class="w-[1.8vw] h-[1.8vw]">
             </div> 
             <div class="relative">
-                <img src="{{ asset('assets/images/profile-picture.png') }}" alt="Profile Picture" class="rounded-full cursor-pointer profilePicture" width="40">
+                <img src="{{ asset('assets/images/profile-picture.png') }}" alt="Profile Picture" class="rounded-full cursor-pointer profilePicture w-[2.3vw] h-[2.3vw]">
                 <!-- Pop-up Menu -->
-                <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden profileMenu z-50">
-                    <a href="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
-                    <a href="/history" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">History</a>
-                    <a href="{{ route('logout') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Log Out</a>
-                </div>
+                @if(auth()->guard('customer')->check())
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden profileMenu z-50">
+                        <a href="{{ route('profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                        <a href="/history" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">History</a>
+                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button class="block ps-4 text-start w-full py-2 text-gray-800 hover:bg-gray-100">Log Out</button>
+                        </form>
+                    </div>
+                @elseif(auth()->guard('seller')->check())
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 hidden profileMenu z-50">
+                        <a href="{{ route('profile') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Profile</a>
+                        <a href="/history" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Order</a>
+                        <a href="{{ route('store') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">My Store</a> <!-- Tautan ke toko seller -->
+                        <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button class="block ps-4 text-start w-full py-2 text-gray-800 hover:bg-gray-100">Log Out</button>
+                        </form>
+                    </div>
+                @endif
             </div>        
         </div>
     </nav>

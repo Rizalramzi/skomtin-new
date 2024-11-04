@@ -108,9 +108,7 @@
             </div>
         </section>
     @elseif(auth()->guard('seller')->check())
-        <div>
-            <h1>MAKASIH ORANG BAIK</h1>
-        </div>
+        
     @endif
     
 
