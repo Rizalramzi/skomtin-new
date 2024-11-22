@@ -11,22 +11,29 @@
     <div class="container mx-auto p-6">
         <h1 class="text-2xl mb-4">Edit Item: {{ $item->name }}</h1>
 
-        <form action="{{ route('items.update', $item->id) }}" method="POST">
+        <form action="{{ route('items.update', $item->id) }}" method="POST" enctype="multipart/form-data"> <!-- Tambahkan enctype -->
             @csrf
             @method('PUT')
-
+        
             <div class="mb-4">
                 <label for="name" class="block text-gray-700">Nama Item:</label>
                 <input type="text" id="name" name="name" class="border rounded w-full py-2 px-3" value="{{ $item->name }}" required>
             </div>
-
+        
             <div class="mb-4">
                 <label for="price" class="block text-gray-700">Harga:</label>
                 <input type="number" id="price" name="price" class="border rounded w-full py-2 px-3" value="{{ $item->price }}" required>
             </div>
-
+        
+            <div class="mb-4">
+                <label for="image" class="block text-gray-700">Gambar (opsional):</label>
+                <input type="file" id="image" name="image" class="border rounded w-full py-2 px-3" accept="image/*">
+                <small class="text-gray-500">Maksimal 2MB. Format: jpeg, png, jpg, gif, svg.</small>
+            </div>
+        
             <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update Item</button>
         </form>
+        
 
         <a href="{{ route('store') }}" class="mt-4 inline-block text-blue-500">Kembali ke Daftar Item</a>
     </div>

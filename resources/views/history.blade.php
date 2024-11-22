@@ -80,7 +80,7 @@
                                     @if(auth()->guard('customer')->check())
                                         <h1 class="text-lg font-semibold">{{ $order->store->name }}</h1>
                                     @elseif(auth()->guard('seller')->check())
-                                        <h1 class="text-lg font-semibold">{{ $order->customer->first_name }} {{ $order->customer->last_name }}</h1>
+                                        <h1 class="text-lg font-semibold">{{ $order->customer->first_name }} {{ $order->customer->last_name }} | {{$order->customer->class}}</h1>
                                     @endif
                                     <div class="flex items-center">
                                         <p class="text-sm">{{ $order->created_at }}</p>

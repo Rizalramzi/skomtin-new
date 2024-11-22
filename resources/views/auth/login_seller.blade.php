@@ -29,7 +29,7 @@
                     <div class="w-full lg:max-w-[30vw] max-w-[80vw]">
                         <!-- Back Icon -->
                         <div  class="">
-                            <a href="index.html" class="text-black">
+                            <a href="/" class="text-black">
                                 <img src="{{asset('assets/icons/back-icon.svg')}}" alt="" width="" class="w-[8vw] h-[8.2vw] lg:w-[2.302vw] lg:h-[2.448vw]">
                             </a>
                         </div>

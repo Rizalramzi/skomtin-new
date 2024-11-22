@@ -162,7 +162,7 @@
             </div>
         </div>
         <div class="absolute inset-0 flex justify-center items-center mt-[17vw]">
-            <button class="bg-main px-[2.083vw] py-[1.042vw] font-semibold text-[1.042vw] rounded rounded-tr-[1.042vw] rounded-bl-[1.042vw] rounded-tl-[0.26vw] rounded-br-[0.26vw]">Mulai Sekarang</button>
+            <button class="bg-main px-[2.083vw] py-[1.042vw] font-semibold text-[1.042vw] rounded rounded-tr-[1.042vw] rounded-bl-[1.042vw] rounded-tl-[0.26vw] rounded-br-[0.26vw]"><a href="{{ route('login.customer')}}">Mulai Sekarang</a></button>
         </div>
     </div>
 </section>
